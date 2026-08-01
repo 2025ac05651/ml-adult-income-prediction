@@ -100,13 +100,13 @@ ML_Assignment2/
 Clone the repository:
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_LINK>
+git clone https://github.com/2025ac05651/ml-adult-income-prediction
 ```
 
 Move into the project directory:
 
 ```bash
-cd ML_Assignment2
+cd ml-adult-income-prediction
 ```
 
 Install the required packages:
@@ -128,7 +128,7 @@ streamlit run app.py
 The application will be available at:
 
 ```
-http://localhost:8501
+https://ml-adult-income-prediction-2025ac05651.streamlit.app/
 ```
 
 ---
@@ -137,13 +137,10 @@ http://localhost:8501
 
 ### Streamlit Home Page
 
-*(Insert screenshot of the main Streamlit interface here.)*
-
----
+![alt text](image-1.png)---
 
 ### Prediction Result
 
-*(Insert screenshot showing a prediction result here.)*
 
 ---
 
@@ -163,12 +160,11 @@ http://localhost:8501
 
 **Streamlit Application**
 
-> Add your deployed Streamlit URL here after deployment.
 
 Example:
 
 ```
-https://your-app-name.streamlit.app
+https://ml-adult-income-prediction-2025ac05651.streamlit.app/
 ```
 
 ---
@@ -180,7 +176,7 @@ Add your GitHub repository URL here.
 Example:
 
 ```
-https://github.com/yourusername/ML_Assignment2
+https://github.com/2025ac05651/ml-adult-income-prediction
 ```
 
 ---
