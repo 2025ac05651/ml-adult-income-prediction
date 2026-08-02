@@ -155,8 +155,6 @@ The application will be available locally at:
 ```text
 http://localhost:8501
 ```
-https://2025ac05651-ml-adult-income-prediction.streamlit.app/
-```
 
 ---
 
