@@ -92,6 +92,29 @@ ML_Assignment2/
 └── notebooks/
     └── ML_Assignment2.ipynb
 ```
+│   app.py
+│   README.md
+│   requirements.txt
+│   structure.txt
+│
+├───.devcontainer
+│       devcontainer.json
+│
+├───dataset
+│       adult.csv
+│       adult_encoded.csv
+│       test_data.csv
+│
+├───models
+│       decision_tree.pkl
+│       knn.pkl
+│       logistic_regression.pkl
+│       naive_bayes.pkl
+│       random_forest.pkl
+│       scaler.pkl
+│
+└───notebooks
+        ML_Assignment2.ipynb
 
 ---
 
@@ -128,7 +151,7 @@ streamlit run app.py
 The application will be available at:
 
 ```
-https://ml-adult-income-prediction-2025ac05651.streamlit.app/
+https://2025ac05651-ml-adult-income-prediction.streamlit.app/
 ```
 
 ---
@@ -137,9 +160,11 @@ https://ml-adult-income-prediction-2025ac05651.streamlit.app/
 
 ### Streamlit Home Page
 
-![alt text](image-1.png)---
+<img width="1434" height="717" alt="mainpage" src="https://github.com/user-attachments/assets/f5590728-f8eb-4dd0-85f7-c2db83a7cac1" />
+
 
 ### Prediction Result
+<img width="1434" height="717" alt="prediction page" src="https://github.com/user-attachments/assets/bce6a07f-417a-4282-a0a9-5aee0cc633f5" />
 
 
 ---
@@ -164,19 +189,19 @@ https://ml-adult-income-prediction-2025ac05651.streamlit.app/
 Example:
 
 ```
-https://ml-adult-income-prediction-2025ac05651.streamlit.app/
+https://2025ac05651-ml-adult-income-prediction.streamlit.app/
 ```
 
 ---
 
 # GitHub Repository
 
-Add your GitHub repository URL here.
-
-Example:
+https://github.com/2025ac05651/ml-adult-income-prediction
+E
+xample:
 
 ```
-https://github.com/2025ac05651/ml-adult-income-prediction
+https://2025ac05651-ml-adult-income-prediction.streamlit.app/
 ```
 
 ---
