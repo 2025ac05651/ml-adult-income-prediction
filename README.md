@@ -1,76 +1,103 @@
 # Adult Income Prediction using Machine Learning
 
-## Project Overview
+## 1. Problem Statement
 
-This project was developed as part of the **BITS Pilani M.Tech in Artificial Intelligence and Machine Learning** Machine Learning Assignment.
+The objective of this project is to build and compare multiple supervised machine learning classification models to predict whether an individual's annual income is **greater than 50K** or **less than or equal to 50K** using the Adult Census Income Dataset.
 
-The objective is to build and compare multiple machine learning classification models to predict whether an individual's annual income is:
-
-- **<=50K**
-- **>50K**
-
-The project includes:
+The project demonstrates the complete machine learning workflow, including:
 
 - Data preprocessing
+- Data cleaning
 - Exploratory Data Analysis (EDA)
-- Model training and evaluation
-- Streamlit web application
-- Model deployment
+- Feature encoding
+- Feature scaling
+- Model training
+- Model evaluation
+- Model comparison
+- Streamlit web application deployment
 
 ---
 
-# Dataset
+# 2. Dataset Description
 
 **Dataset Name:** Adult Census Income Dataset
 
-**Source:** UCI Machine Learning Repository / Kaggle
+**Source:**  Kaggle
 
 ### Dataset Summary
 
-- Total Instances: **32,537** (after removing duplicate records)
-- Predictor Features: **14**
-- Target Variable: **income**
-- Problem Type: **Binary Classification**
+| Attribute | Description |
+|------------|-------------|
+| Problem Type | Binary Classification |
+| Total Instances | 32,537 (after removing duplicate records) |
+| Predictor Features | 14 |
+| Target Variable | Income |
 
-Target Classes:
+### Target Classes
 
 - <=50K
 - >50K
 
 ---
+# 3. GitHub Repository Link
 
-# Machine Learning Models Used
+Repository URL:
 
-The following classification algorithms were implemented and compared:
+**https://github.com/2025ac05651/ml-adult-income-prediction**
+
+The repository contains:
+
+- Complete source code
+- Jupyter Notebook
+- Trained Machine Learning models
+- requirements.txt
+- README.md
+- Dataset
+- Test dataset (CSV)
+- Streamlit application
+
+---
+# 4. Machine Learning Models Used
+
+The following supervised machine learning algorithms were implemented and compared.
 
 1. Logistic Regression
 2. Decision Tree
 3. k-Nearest Neighbors (kNN)
 4. Gaussian Naive Bayes
-5. Random Forest
+5. Random Forest (Ensemble)
 
 ---
 
-# Model Performance
+# 5. Model Performance Comparison
 
-| Model | Accuracy | AUC | Precision | Recall | F1 Score | MCC |
-|-------|---------:|----:|----------:|---------:|---------:|---------:|
-| Random Forest | 0.8560 | 0.8977 | 0.7425 | 0.6161 | 0.6734 | 0.5863 |
-| k-Nearest Neighbors | 0.8239 | 0.8440 | 0.6518 | 0.5778 | 0.6126 | 0.5007 |
+| ML Model | Accuracy | AUC | Precision | Recall | F1 Score | MCC |
+|-----------|---------:|----:|----------:|---------:|---------:|---------:|
 | Logistic Regression | 0.8239 | 0.8497 | 0.7140 | 0.4490 | 0.5513 | 0.4674 |
 | Decision Tree | 0.8026 | 0.7313 | 0.5896 | 0.5938 | 0.5917 | 0.4615 |
-| Naive Bayes | 0.7915 | 0.8274 | 0.6501 | 0.2915 | 0.4025 | 0.3329 |
-
-### Best Performing Model
-
-**Random Forest** achieved the best overall performance based on Accuracy, AUC Score, F1 Score, and Matthews Correlation Coefficient (MCC).
+| k-Nearest Neighbors (kNN) | 0.8239 | 0.8440 | 0.6518 | 0.5778 | 0.6126 | 0.5007 |
+| Gaussian Naive Bayes | 0.7915 | 0.8274 | 0.6501 | 0.2915 | 0.4025 | 0.3329 |
+| **Random Forest (Ensemble)** | **0.8560** | **0.8977** | **0.7425** | **0.6161** | **0.6734** | **0.5863** |
 
 ---
 
-# Project Structure
+# 6. Observations on Model Performance
 
-```
-ML_Assignment2/
+| ML Model | Observation about Model Performance |
+|-----------|-------------------------------------|
+| Logistic Regression | Achieved good overall accuracy and high precision but comparatively lower recall, indicating that some positive income instances were missed. |
+| Decision Tree | Produced balanced precision and recall but lower accuracy and AUC than most other models. It is more prone to overfitting than ensemble methods. |
+| k-Nearest Neighbors (kNN) | Delivered balanced performance with better recall and F1-score than Logistic Regression, making it suitable for this dataset after feature scaling. |
+| Gaussian Naive Bayes | Recorded the lowest overall performance because of its low recall and F1-score. The feature independence assumption limited its effectiveness. |
+| Random Forest (Ensemble) | Achieved the highest Accuracy, AUC, F1-score and MCC, demonstrating strong generalization and robustness on the Adult Income dataset. |
+| **Overall Winner** | **Random Forest (Ensemble)** was the best-performing model and was selected for deployment in the Streamlit application. |
+
+---
+
+# 7. Project Structure
+
+```text
+ml-adult-income-prediction/
 │
 ├── app.py
 ├── README.md
@@ -95,21 +122,21 @@ ML_Assignment2/
 
 ---
 
-# Installation
+# 8. Installation
 
-Clone the repository:
+Clone the repository.
 
 ```bash
-git clone https://github.com/2025ac05651/ml-adult-income-prediction
+git clone https://github.com/2025ac05651/ml-adult-income-prediction.git
 ```
 
-Move into the project directory:
+Navigate to the project directory.
 
 ```bash
 cd ml-adult-income-prediction
 ```
 
-Install the required packages:
+Install the required Python packages.
 
 ```bash
 pip install -r requirements.txt
@@ -117,19 +144,27 @@ pip install -r requirements.txt
 
 ---
 
-# Running the Streamlit Application
+# 9. Running the Streamlit Application
 
-Run the following command:
+Run the application using the following command.
 
 ```bash
 streamlit run app.py
 ```
 
-The application will be available at:
+The application will be available locally at:
 
+```text
+http://localhost:8501
 ```
-https://ml-adult-income-prediction-2025ac05651.streamlit.app/
-```
+
+---
+
+# 10. Live Streamlit Application
+
+The deployed application can be accessed at:
+**https://2025ac05651-ml-adult-income-prediction.streamlit.app/**
+
 
 ---
 
@@ -137,14 +172,16 @@ https://ml-adult-income-prediction-2025ac05651.streamlit.app/
 
 ### Streamlit Home Page
 
-![alt text](image-1.png)---
+
+<img width="1434" height="717" alt="Home Page" src="https://github.com/user-attachments/assets/f5590728-f8eb-4dd0-85f7-c2db83a7cac1"/>
+
 
 ### Prediction Result
 
+<img width="1434" height="717" alt="Prediction Result" src="https://github.com/user-attachments/assets/bce6a07f-417a-4282-a0a9-5aee0cc633f5"/>
 
----
 
-# Technologies Used
+# 12. Technologies Used
 
 - Python
 - Pandas
@@ -156,38 +193,46 @@ https://ml-adult-income-prediction-2025ac05651.streamlit.app/
 
 ---
 
-# Deployment
+# 13. Deployment
 
-**Streamlit Application**
+The application has been successfully deployed using **Streamlit Community Cloud**.
 
+**Deployment URL**
 
-Example:
-
-```
-https://ml-adult-income-prediction-2025ac05651.streamlit.app/
-```
+https://2025ac05651-ml-adult-income-prediction.streamlit.app/
 
 ---
 
-# GitHub Repository
+# 14. References
 
-Add your GitHub repository URL here.
+1. Dua, D. & Graff, C. UCI Machine Learning Repository – Adult Census Income Dataset. https://archive.ics.uci.edu/
 
-Example:
+2. Kaggle – Adult Census Income Dataset. https://www.kaggle.com/
 
-```
-https://github.com/2025ac05651/ml-adult-income-prediction
-```
+3. Scikit-learn Documentation. https://scikit-learn.org/
+
+4. Streamlit Documentation. https://docs.streamlit.io/
+
+5. Pandas Documentation. https://pandas.pydata.org/
+
+6. NumPy Documentation. https://numpy.org/
+
+7. Matplotlib Documentation. https://matplotlib.org/
 
 ---
 
+# 15. Author
 
-# Author
+**Name:** Sowmiya S
 
-**Name:** SOWMIYA 
+**BITS ID:** 2025AC05651
 
-**BITS-ID:** 2025AC05651
-
-**Programme:** M.Tech Artificial Intelligence and Machine Learning
+**Programme:** M.Tech in Artificial Intelligence and Machine Learning
 
 **University:** BITS Pilani
+
+---
+
+## Acknowledgement
+
+This project was developed as part of the **Machine Learning** course for the **M.Tech in Artificial Intelligence and Machine Learning** programme at **BITS Pilani**.
