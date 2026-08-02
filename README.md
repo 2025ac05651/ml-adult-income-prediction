@@ -96,8 +96,12 @@ The following supervised machine learning algorithms were implemented and compar
 
 # 7. Project Structure
 
-```text
+```
+<<<<<<< .mine
 ml-adult-income-prediction/
+=======
+ml-adult-income-prediction/
+>>>>>>> .theirs
 │
 ├── app.py
 ├── README.md
@@ -118,8 +122,6 @@ ml-adult-income-prediction/
 │
 └── notebooks/
     └── ML_Assignment2.ipynb
-```
-
 ---
 
 # 8. Installation
@@ -157,6 +159,8 @@ The application will be available locally at:
 ```text
 http://localhost:8501
 ```
+https://2025ac05651-ml-adult-income-prediction.streamlit.app/
+```
 
 ---
 
@@ -172,11 +176,22 @@ The deployed application can be accessed at:
 
 ### Streamlit Home Page
 
+<<<<<<< .mine
+
+=======
+<img width="1434" height="717" alt="mainpage" src="https://github.com/user-attachments/assets/f5590728-f8eb-4dd0-85f7-c2db83a7cac1" />
+>>>>>>> .theirs
 
 <img width="1434" height="717" alt="Home Page" src="https://github.com/user-attachments/assets/f5590728-f8eb-4dd0-85f7-c2db83a7cac1"/>
+<<<<<<< .mine
 
 
+=======
+
+
+>>>>>>> .theirs
 ### Prediction Result
+<img width="1434" height="717" alt="prediction page" src="https://github.com/user-attachments/assets/bce6a07f-417a-4282-a0a9-5aee0cc633f5" />
 
 <img width="1434" height="717" alt="Prediction Result" src="https://github.com/user-attachments/assets/bce6a07f-417a-4282-a0a9-5aee0cc633f5"/>
 
@@ -201,6 +216,19 @@ The application has been successfully deployed using **Streamlit Community Cloud
 
 https://2025ac05651-ml-adult-income-prediction.streamlit.app/
 
+<<<<<<< .mine
+
+=======
+```
+>>>>>>> .theirs
+https://2025ac05651-ml-adult-income-prediction.streamlit.app/
+<<<<<<< .mine
+
+
+=======
+```
+
+>>>>>>> .theirs
 ---
 
 # 14. References
