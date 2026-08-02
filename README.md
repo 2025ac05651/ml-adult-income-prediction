@@ -70,7 +70,7 @@ The following classification algorithms were implemented and compared:
 # Project Structure
 
 ```
-ML_Assignment2/
+ml-adult-income-prediction/
 │
 ├── app.py
 ├── README.md
@@ -91,31 +91,6 @@ ML_Assignment2/
 │
 └── notebooks/
     └── ML_Assignment2.ipynb
-```
-│   app.py
-│   README.md
-│   requirements.txt
-│   structure.txt
-│
-├───.devcontainer
-│       devcontainer.json
-│
-├───dataset
-│       adult.csv
-│       adult_encoded.csv
-│       test_data.csv
-│
-├───models
-│       decision_tree.pkl
-│       knn.pkl
-│       logistic_regression.pkl
-│       naive_bayes.pkl
-│       random_forest.pkl
-│       scaler.pkl
-│
-└───notebooks
-        ML_Assignment2.ipynb
-
 ---
 
 # Installation
@@ -197,14 +172,6 @@ https://2025ac05651-ml-adult-income-prediction.streamlit.app/
 # GitHub Repository
 
 https://github.com/2025ac05651/ml-adult-income-prediction
-E
-xample:
-
-```
-https://2025ac05651-ml-adult-income-prediction.streamlit.app/
-```
-
----
 
 
 # Author
