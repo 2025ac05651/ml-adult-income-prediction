@@ -71,12 +71,51 @@ model_name = st.sidebar.selectbox(
 # ==========================================
 # Model Metrics
 # ==========================================
-metrics={
-"Random Forest":{"Accuracy":"85.60%","AUC":"89.77%","F1":"67.34%","MCC":"58.63%"},
-"Logistic Regression":{"Accuracy":"82.39%","AUC":"84.97%","F1":"55.13%","MCC":"46.74%"},
-"Decision Tree":{"Accuracy":"80.26%","AUC":"73.13%","F1":"59.17%","MCC":"46.15%"},
-"k-Nearest Neighbors":{"Accuracy":"82.39%","AUC":"84.40%","F1":"61.26%","MCC":"50.07%"},
-"Naive Bayes":{"Accuracy":"79.15%","AUC":"82.74%","F1":"40.25%","MCC":"33.29%"}
+metrics = {
+    "Logistic Regression": {
+        "Accuracy":"82.39%",
+        "AUC":"84.97%",
+        "Precision":"71.40%",
+        "Recall":"44.90%",
+        "F1":"55.13%",
+        "MCC":"46.74%"
+    },
+
+    "Decision Tree": {
+        "Accuracy":"80.26%",
+        "AUC":"73.13%",
+        "Precision":"58.96%",
+        "Recall":"59.38%",
+        "F1":"59.17%",
+        "MCC":"46.15%"
+    },
+
+    "k-Nearest Neighbors": {
+        "Accuracy":"82.39%",
+        "AUC":"84.40%",
+        "Precision":"65.18%",
+        "Recall":"57.78%",
+        "F1":"61.26%",
+        "MCC":"50.07%"
+    },
+
+    "Naive Bayes": {
+        "Accuracy":"79.15%",
+        "AUC":"82.74%",
+        "Precision":"65.01%",
+        "Recall":"29.15%",
+        "F1":"40.25%",
+        "MCC":"33.29%"
+    },
+
+    "Random Forest": {
+        "Accuracy":"85.60%",
+        "AUC":"89.77%",
+        "Precision":"74.25%",
+        "Recall":"61.61%",
+        "F1":"67.34%",
+        "MCC":"58.63%"
+    }
 }
 
 m=metrics[model_name]
@@ -84,9 +123,12 @@ st.sidebar.markdown("---")
 st.sidebar.subheader("Model Performance")
 
 st.sidebar.metric("Accuracy", m["Accuracy"])
-st.sidebar.metric("AUC Score", m["AUC"])
+st.sidebar.metric("AUC", m["AUC"])
+st.sidebar.metric("Precision", m["Precision"])
+st.sidebar.metric("Recall", m["Recall"])
 st.sidebar.metric("F1 Score", m["F1"])
 st.sidebar.metric("MCC", m["MCC"])
+
 st.sidebar.markdown("---")
 st.sidebar.subheader("Dataset Information")
 
