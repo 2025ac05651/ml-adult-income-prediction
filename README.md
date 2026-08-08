@@ -166,18 +166,29 @@ https://2025ac05651-ml-adult-income-prediction.streamlit.app/
 
 ---
 
-# Sample Screenshots
+# Screenshots
 
 ### Streamlit Home Page
 
-
-<img width="1434" height="717" alt="Home Page" src="https://github.com/user-attachments/assets/f5590728-f8eb-4dd0-85f7-c2db83a7cac1"/>
-
+<img width="1440" height="900" alt="2026-08-08 (17)" src="https://github.com/user-attachments/assets/ae181251-31e3-4d40-92ad-25c70ca18837" />
 
 ### Prediction Result
 
-<img width="1434" height="717" alt="Prediction Result" src="https://github.com/user-attachments/assets/bce6a07f-417a-4282-a0a9-5aee0cc633f5"/>
+<img width="1440" height="900" alt="2026-08-08 (16)" src="https://github.com/user-attachments/assets/db8756ce-95d6-496c-9c03-b1161fdcf585" />
 
+<img width="1440" height="900" alt="2026-08-08 (18)" src="https://github.com/user-attachments/assets/93feae28-ed58-492d-b51d-69aefae23a6d" />
+
+<img width="1440" height="900" alt="2026-08-08 (24)" src="https://github.com/user-attachments/assets/66506720-fecd-4af9-bcfc-c08b5ba9c957" />
+
+<img width="1440" height="900" alt="2026-08-08 (25)" src="https://github.com/user-attachments/assets/7b36c044-0f56-4187-be66-9d40e80655c0" />
+
+<img width="1440" height="900" alt="2026-08-08 (26)" src="https://github.com/user-attachments/assets/0b3a339f-387e-485b-a37b-6d60f7d30c87" />
+
+<img width="1440" height="900" alt="2026-08-08 (27)" src="https://github.com/user-attachments/assets/bc0e3ec8-2663-4b13-98c2-81874f1e274f" />
+
+<img width="1440" height="900" alt="2026-08-08 (28)" src="https://github.com/user-attachments/assets/571f8587-6671-48ff-8dce-df9338acec3e" />
+
+<img width="1440" height="900" alt="2026-08-08 (29)" src="https://github.com/user-attachments/assets/89425b06-69dc-432a-a96e-2f71458900db" />
 
 # 12. Technologies Used
 
