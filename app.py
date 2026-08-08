@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import matplotlib.pyplot as plt
 from sklearn.metrics import (
     confusion_matrix,
     classification_report,
@@ -60,6 +61,7 @@ The prediction is performed using five machine learning classification algorithm
 - Gaussian Naive Bayes
 - Random Forest
 """)
+
 # ==========================================
 # Sidebar
 # ==========================================
@@ -77,60 +79,63 @@ model_name = st.sidebar.selectbox(
     ]
 )
 
+# ==========================================
+# Model Metrics - Baseline / Experiment Results
+# ==========================================
 
-# ==========================================
-# Model Metrics
-# ==========================================
 metrics = {
     "Logistic Regression": {
-        "Accuracy":"82.39%",
-        "AUC":"84.97%",
-        "Precision":"71.40%",
-        "Recall":"44.90%",
-        "F1":"55.13%",
-        "MCC":"46.74%"
+        "Accuracy": "82.39%",
+        "AUC": "84.97%",
+        "Precision": "71.40%",
+        "Recall": "44.90%",
+        "F1": "55.13%",
+        "MCC": "46.74%"
     },
 
     "Decision Tree": {
-        "Accuracy":"80.26%",
-        "AUC":"73.13%",
-        "Precision":"58.96%",
-        "Recall":"59.38%",
-        "F1":"59.17%",
-        "MCC":"46.15%"
+        "Accuracy": "80.26%",
+        "AUC": "73.13%",
+        "Precision": "58.96%",
+        "Recall": "59.38%",
+        "F1": "59.17%",
+        "MCC": "46.15%"
     },
 
     "k-Nearest Neighbors": {
-        "Accuracy":"82.39%",
-        "AUC":"84.40%",
-        "Precision":"65.18%",
-        "Recall":"57.78%",
-        "F1":"61.26%",
-        "MCC":"50.07%"
+        "Accuracy": "82.39%",
+        "AUC": "84.40%",
+        "Precision": "65.18%",
+        "Recall": "57.78%",
+        "F1": "61.26%",
+        "MCC": "50.07%"
     },
 
     "Naive Bayes": {
-        "Accuracy":"79.15%",
-        "AUC":"82.74%",
-        "Precision":"65.01%",
-        "Recall":"29.15%",
-        "F1":"40.25%",
-        "MCC":"33.29%"
+        "Accuracy": "79.15%",
+        "AUC": "82.74%",
+        "Precision": "65.01%",
+        "Recall": "29.15%",
+        "F1": "40.25%",
+        "MCC": "33.29%"
     },
 
     "Random Forest": {
-        "Accuracy":"85.60%",
-        "AUC":"89.77%",
-        "Precision":"74.25%",
-        "Recall":"61.61%",
-        "F1":"67.34%",
-        "MCC":"58.63%"
+        "Accuracy": "85.60%",
+        "AUC": "89.77%",
+        "Precision": "74.25%",
+        "Recall": "61.61%",
+        "F1": "67.34%",
+        "MCC": "58.63%"
     }
 }
 
-m=metrics[model_name]
+m = metrics[model_name]
+
 st.sidebar.markdown("---")
 st.sidebar.subheader("Model Performance")
+
+st.sidebar.caption("Baseline results from the model experiment")
 
 st.sidebar.metric("Accuracy", m["Accuracy"])
 st.sidebar.metric("AUC", m["AUC"])
@@ -143,11 +148,8 @@ st.sidebar.markdown("---")
 st.sidebar.subheader("Dataset Information")
 
 st.sidebar.write("**Dataset:** Adult Census Income")
-
 st.sidebar.write("**Instances:** 32,537")
-
 st.sidebar.write("**Features:** 14")
-
 st.sidebar.write("**Target:** Income")
 
 st.sidebar.write("**Classes:**")
@@ -155,17 +157,43 @@ st.sidebar.write("• <=50K")
 st.sidebar.write("• >50K")
 
 # ==========================================
-# Upload Test Dataset
+# Model Selection Helper
 # ==========================================
 
+def get_selected_model(name):
+    """Return the trained model corresponding to the selected model name."""
+    if name == "Logistic Regression":
+        return log_model
+    elif name == "Decision Tree":
+        return dt_model
+    elif name == "k-Nearest Neighbors":
+        return knn_model
+    elif name == "Naive Bayes":
+        return nb_model
+    else:
+        return rf_model
+
+
+def prepare_features_for_model(X, selected_model_name):
+    """Apply the same preprocessing used during model training."""
+
+    if selected_model_name in ["Logistic Regression", "k-Nearest Neighbors"]:
+        return scaler.transform(X)
+
+    return X
+
+# ==========================================
+# Upload Test Dataset
+# ==========================================
 
 st.markdown("---")
 st.header("📊 Model Evaluation on Uploaded Test Dataset")
 st.write(
     "Upload a test dataset (CSV) containing the target column "
     "**income** to evaluate the selected model. "
-    "The application will display evaluation metrics, a "
-    "classification report, and a confusion matrix."
+    "The evaluation is performed dynamically on the uploaded data "
+    "and displays all six required metrics, a classification report, "
+    "and a confusion matrix."
 )
 
 uploaded_file = st.file_uploader(
@@ -173,15 +201,444 @@ uploaded_file = st.file_uploader(
     type=["csv"]
 )
 
+test_df = None
+
 if uploaded_file is not None:
-    test_df = pd.read_csv(uploaded_file)
+    try:
+        test_df = pd.read_csv(uploaded_file)
 
-    st.success("Test dataset uploaded successfully!")
+        st.success("Test dataset uploaded successfully!")
 
-    st.dataframe(test_df.head())
+        st.write(f"**Test records uploaded:** {len(test_df):,}")
+        st.dataframe(test_df.head(), use_container_width=True)
 
+    except Exception as e:
+        st.error(f"Unable to read the uploaded CSV file: {e}")
+        test_df = None
 # ==========================================
-# Input Section
+# Dynamic Test Dataset Evaluation
+# ==========================================
+
+if test_df is not None:
+
+    st.markdown("---")
+
+    if "income" not in test_df.columns:
+
+        st.error(
+            "The uploaded CSV must contain the target column "
+            "'income'. Please upload the encoded test dataset "
+            "with the target column included."
+        )
+
+    else:
+
+        # Expected feature order used during training
+        expected_features = [
+            "age",
+            "workclass",
+            "fnlwgt",
+            "education",
+            "education.num",
+            "marital.status",
+            "occupation",
+            "relationship",
+            "race",
+            "sex",
+            "capital.gain",
+            "capital.loss",
+            "hours.per.week",
+            "native.country"
+        ]
+
+        missing_features = [
+            column
+            for column in expected_features
+            if column not in test_df.columns
+        ]
+
+        if missing_features:
+
+            st.error(
+                "The uploaded dataset is missing the following "
+                f"required feature(s): {', '.join(missing_features)}"
+            )
+
+        else:
+
+            try:
+
+                # Keep exactly the 14 features in the same order
+                X_test = test_df[expected_features].copy()
+                y_test = test_df["income"]
+
+                # ==================================================
+                # ALL FIVE MODEL COMPARISON
+                # ==================================================
+
+                st.subheader("🏆 Model Comparison on Test Dataset")
+
+                st.write(
+                    "The following table shows the performance of all "
+                    "five machine learning models on the uploaded test dataset."
+                )
+
+                models = {
+                    "Logistic Regression": log_model,
+                    "Decision Tree": dt_model,
+                    "k-Nearest Neighbors": knn_model,
+                    "Naive Bayes": nb_model,
+                    "Random Forest": rf_model
+                }
+
+                comparison_results = []
+
+                for name, model in models.items():
+
+                    # Apply scaling only to models that require it
+                    X_model = prepare_features_for_model(
+                        X_test,
+                        name
+                    )
+
+                    # Predictions
+                    model_pred = model.predict(X_model)
+
+                    # AUC
+                    if hasattr(model, "predict_proba"):
+
+                        model_prob = model.predict_proba(X_model)[:, 1]
+
+                        try:
+                            model_auc = roc_auc_score(
+                                y_test,
+                                model_prob
+                            )
+                        except ValueError:
+                            model_auc = None
+
+                    else:
+                        model_auc = None
+
+                    # Metrics
+                    model_accuracy = accuracy_score(
+                        y_test,
+                        model_pred
+                    )
+
+                    model_precision = precision_score(
+                        y_test,
+                        model_pred,
+                        zero_division=0
+                    )
+
+                    model_recall = recall_score(
+                        y_test,
+                        model_pred,
+                        zero_division=0
+                    )
+
+                    model_f1 = f1_score(
+                        y_test,
+                        model_pred,
+                        zero_division=0
+                    )
+
+                    model_mcc = matthews_corrcoef(
+                        y_test,
+                        model_pred
+                    )
+
+                    comparison_results.append({
+                        "Model": name,
+                        "Accuracy": model_accuracy,
+                        "AUC": model_auc,
+                        "Precision": model_precision,
+                        "Recall": model_recall,
+                        "F1 Score": model_f1,
+                        "MCC": model_mcc
+                    })
+
+                # ==================================================
+                # FIVE MODEL COMPARISON TABLE
+                # ==================================================
+
+                comparison_df = pd.DataFrame(comparison_results)
+
+                # Find best model based on F1 Score
+                best_model_row = comparison_df.loc[
+                    comparison_df["F1 Score"].idxmax()
+                ]
+
+                best_model_name = best_model_row["Model"]
+
+                # Create a separate dataframe for display
+                display_df = comparison_df.copy()
+
+                # Convert metrics to percentage format
+                metric_columns = [
+                    "Accuracy",
+                    "AUC",
+                    "Precision",
+                    "Recall",
+                    "F1 Score",
+                    "MCC"
+                ]
+
+                for column in metric_columns:
+                    display_df[column] = display_df[column].apply(
+                        lambda x: f"{x * 100:.2f}%"
+                        if pd.notna(x)
+                        else "N/A"
+                    )
+
+
+                # Highlight the best-performing model
+                def highlight_best(row):
+
+                    if row["Model"] == best_model_name:
+                        return [
+                            "background-color: #d4edda; "
+                            "font-weight: bold"
+                        ] * len(row)
+
+                    return [""] * len(row)
+
+
+                st.dataframe(
+                    display_df.style.apply(
+                        highlight_best,
+                        axis=1
+                    ),
+                    use_container_width=True,
+                    hide_index=True
+                )
+
+                st.success(
+                    f"🏆 Best Performing Model on Uploaded Test Data: "
+                    f"**{best_model_name}**"
+                )
+
+                st.caption(
+                    "The best-performing model is identified based on the "
+                    "highest F1 Score on the uploaded test dataset."
+                )
+                # ==================================================
+                # SELECTED MODEL DETAILED EVALUATION
+                # ==================================================
+
+                st.markdown("---")
+
+                st.subheader(
+                    f"📈 Detailed Evaluation — {model_name}"
+                )
+
+                selected_model = get_selected_model(model_name)
+
+                X_model = prepare_features_for_model(
+                    X_test,
+                    model_name
+                )
+
+                # Generate predictions
+                y_pred = selected_model.predict(X_model)
+
+                # Generate probabilities for AUC
+                if hasattr(selected_model, "predict_proba"):
+
+                    y_prob = selected_model.predict_proba(
+                        X_model
+                    )[:, 1]
+
+                    try:
+                        auc = roc_auc_score(
+                            y_test,
+                            y_prob
+                        )
+                    except ValueError:
+                        auc = None
+
+                else:
+                    auc = None
+
+                # Calculate metrics
+                accuracy = accuracy_score(
+                    y_test,
+                    y_pred
+                )
+
+                precision = precision_score(
+                    y_test,
+                    y_pred,
+                    zero_division=0
+                )
+
+                recall = recall_score(
+                    y_test,
+                    y_pred,
+                    zero_division=0
+                )
+
+                f1 = f1_score(
+                    y_test,
+                    y_pred,
+                    zero_division=0
+                )
+
+                mcc = matthews_corrcoef(
+                    y_test,
+                    y_pred
+                )
+
+                # ==================================================
+                # SELECTED MODEL METRICS
+                # ==================================================
+
+                st.subheader("Evaluation Metrics")
+
+                if auc is not None:
+                    auc_display = f"{auc:.4f}"
+                else:
+                    auc_display = "N/A"
+
+                dynamic_metrics_df = pd.DataFrame({
+                    "Metric": [
+                        "Accuracy",
+                        "AUC",
+                        "Precision",
+                        "Recall",
+                        "F1 Score",
+                        "MCC"
+                    ],
+                    "Value": [
+                        f"{accuracy:.4f}",
+                        auc_display,
+                        f"{precision:.4f}",
+                        f"{recall:.4f}",
+                        f"{f1:.4f}",
+                        f"{mcc:.4f}"
+                    ]
+                })
+
+                st.table(dynamic_metrics_df)
+
+                # ==================================================
+                # CLASSIFICATION REPORT
+                # ==================================================
+
+                st.subheader("Classification Report")
+
+                report = classification_report(
+                    y_test,
+                    y_pred,
+                    labels=[0, 1],
+                    target_names=["<=50K", ">50K"],
+                    output_dict=True,
+                    zero_division=0
+                )
+
+                report_df = pd.DataFrame(report).transpose()
+
+                # Rename summary rows for better readability
+                report_df.rename(
+                    index={
+                        "macro avg": "Macro Average",
+                        "weighted avg": "Weighted Average"
+                    },
+                    inplace=True
+                )
+
+                # Round numerical values
+                report_df = report_df.round(4)
+
+                st.dataframe(
+                    report_df,
+                    use_container_width=True
+                )
+                # ==================================================
+                # CONFUSION MATRIX
+                # ==================================================
+
+                st.subheader("Confusion Matrix")
+
+                cm = confusion_matrix(
+                    y_test,
+                    y_pred
+                )
+
+                # Smaller figure
+                fig, ax = plt.subplots(
+                    figsize=(4.5, 3.2)
+                )
+
+                ax.imshow(
+                    cm,
+                    cmap="Blues"
+                )
+
+                for i in range(cm.shape[0]):
+                    for j in range(cm.shape[1]):
+
+                        ax.text(
+                            j,
+                            i,
+                            cm[i, j],
+                            ha="center",
+                            va="center",
+                            fontsize=11
+                        )
+
+                ax.set_xlabel(
+                    "Predicted",
+                    fontsize=10
+                )
+
+                ax.set_ylabel(
+                    "Actual",
+                    fontsize=10
+                )
+
+                ax.set_xticks([0, 1])
+                ax.set_yticks([0, 1])
+
+                ax.set_xticklabels([
+                    "<=50K",
+                    ">50K"
+                ])
+
+                ax.set_yticklabels([
+                    "<=50K",
+                    ">50K"
+                ])
+
+                ax.set_title(
+                    f"{model_name} - Test Dataset Confusion Matrix",
+                    fontsize=12
+                )
+
+                # IMPORTANT:
+                # False prevents Streamlit from stretching
+                # the figure across the entire page.
+                st.pyplot(
+                    fig,
+                    use_container_width=False
+                )
+
+                plt.close(fig)
+
+                st.success(
+                    f"Dynamic evaluation completed successfully for "
+                    f"{len(test_df):,} test records using {model_name}."
+                )
+
+            except Exception as e:
+
+                st.error(
+                    "An error occurred while evaluating the uploaded "
+                    f"test dataset: {e}"
+                )
+# ==========================================
+# Single Income Prediction
 # ==========================================
 
 st.markdown("---")
@@ -248,6 +705,7 @@ input_data = pd.DataFrame([[
     "hours.per.week",
     "native.country"
 ])
+
 st.markdown("""
 <style>
 
@@ -276,6 +734,7 @@ st.markdown("""
 
 </style>
 """, unsafe_allow_html=True)
+
 # ==========================================
 # Predict Button
 # ==========================================
@@ -290,205 +749,76 @@ with col2:
     )
 
 # ==========================================
-# Prediction
+# Single Prediction
 # ==========================================
 
 if predict:
 
-    # Select model
-    if model_name == "Logistic Regression":
-        prediction = log_model.predict(scaler.transform(input_data))[0]
-        probs = log_model.predict_proba(scaler.transform(input_data))[0]
+    try:
+        selected_model = get_selected_model(model_name)
 
-    elif model_name == "k-Nearest Neighbors":
-        prediction = knn_model.predict(scaler.transform(input_data))[0]
-        probs = knn_model.predict_proba(scaler.transform(input_data))[0]
+        # Apply the same preprocessing used during training.
+        input_model = prepare_features_for_model(
+            input_data,
+            model_name
+        )
+        prediction = selected_model.predict(input_model)[0]
+        probs = selected_model.predict_proba(input_model)[0]
 
-    elif model_name == "Decision Tree":
-        prediction = dt_model.predict(input_data)[0]
-        probs = dt_model.predict_proba(input_data)[0]
+        confidence = max(probs) * 100
 
-    elif model_name == "Naive Bayes":
-        prediction = nb_model.predict(input_data)[0]
-        probs = nb_model.predict_proba(input_data)[0]
+        st.markdown("---")
+        st.markdown("## Prediction Result")
 
-    else:
-        prediction = rf_model.predict(input_data)[0]
-        probs = rf_model.predict_proba(input_data)[0]
+        st.progress(confidence / 100)
 
-    confidence = max(probs) * 100
-
-    st.subheader("Evaluation Metrics")
-
-    metric_df = pd.DataFrame({
-        "Metric": [
-            "Accuracy",
-            "AUC",
-            "Precision",
-            "Recall",
-            "F1 Score",
-            "MCC"
-        ],
-        "Value": [
-            m["Accuracy"],
-            m["AUC"],
-            m["Precision"],
-            m["Recall"],
-            m["F1"],
-            m["MCC"]
-        ]
-    })
-
-    st.table(metric_df)
-
-    st.markdown("---")
-    st.markdown("## Prediction Result")
-
-    st.progress(confidence / 100)
-
-    st.metric(
-        label="Prediction Confidence",
-        value=f"{confidence:.2f}%"
-    )
-
-    if prediction == 1:
-
-        st.markdown("""
-        <div style="
-            background-color:#d4edda;
-            border:3px solid green;
-            padding:30px;
-            border-radius:15px;
-            text-align:center;
-            margin-top:15px;">
-            <h1 style="color:green;font-size:42px;">
-             Income Greater than 50K
-            </h1>
-        </div>
-        """, unsafe_allow_html=True)
-
-    else:
-
-        st.markdown("""
-        <div style="
-            background-color:#d1ecf1;
-            border:3px solid #0c5460;
-            padding:30px;
-            border-radius:15px;
-            text-align:center;
-            margin-top:15px;">
-            <h1 style="color:#0c5460;font-size:42px;">
-             Income Less than or Equal to 50K
-            </h1>
-        </div>
-        """, unsafe_allow_html=True)
-    if uploaded_file is not None and "income" in test_df.columns:
-
-        from sklearn.metrics import classification_report, confusion_matrix
-        import matplotlib.pyplot as plt
-
-        # Split features and target
-        X_test = test_df.drop("income", axis=1)
-        y_test = test_df["income"]
-
-        # Scale if needed
-        if model_name in ["Logistic Regression", "k-Nearest Neighbors"]:
-            X_model = scaler.transform(X_test)
-        else:
-            X_model = X_test
-
-        # Predict
-        if model_name == "Logistic Regression":
-            y_pred = log_model.predict(X_model)
-
-        elif model_name == "Decision Tree":
-            y_pred = dt_model.predict(X_model)
-
-        elif model_name == "k-Nearest Neighbors":
-            y_pred = knn_model.predict(X_model)
-
-        elif model_name == "Naive Bayes":
-            y_pred = nb_model.predict(X_model)
-
-        else:
-            y_pred = rf_model.predict(X_model)
-
-        # ==========================================
-        # Calculate Evaluation Metrics
-        # ==========================================
-
-        accuracy = accuracy_score(y_test, y_pred)
-        precision = precision_score(y_test, y_pred)
-        recall = recall_score(y_test, y_pred)
-        f1 = f1_score(y_test, y_pred)
-        mcc = matthews_corrcoef(y_test, y_pred)
-
-        st.subheader("Evaluation Metrics")
-
-        metrics_df = pd.DataFrame({
-            "Metric": [
-                "Accuracy",
-                "Precision",
-                "Recall",
-                "F1 Score",
-                "MCC"
-            ],
-            "Value": [
-                round(accuracy, 4),
-                round(precision, 4),
-                round(recall, 4),
-                round(f1, 4),
-                round(mcc, 4)
-            ]
-        })
-
-        st.table(metrics_df)
-
-        # =============================
-        # Classification Report
-        # =============================
-        st.subheader("Classification Report")
-
-        report = classification_report(
-            y_test,
-            y_pred,
-            output_dict=True
+        st.metric(
+            label="Prediction Confidence",
+            value=f"{confidence:.2f}%"
         )
 
-        st.dataframe(pd.DataFrame(report).transpose())
+        if prediction == 1:
 
-        # =============================
-        # Confusion Matrix
-        # =============================
+            st.markdown("""
+            <div style="
+                background-color:#d4edda;
+                border:3px solid green;
+                padding:30px;
+                border-radius:15px;
+                text-align:center;
+                margin-top:15px;">
+                <h1 style="color:green;font-size:42px;">
+                 Income Greater than 50K
+                </h1>
+            </div>
+            """, unsafe_allow_html=True)
 
-        st.subheader("Confusion Matrix")
+        else:
 
-        cm = confusion_matrix(y_test, y_pred)
+            st.markdown("""
+            <div style="
+                background-color:#d1ecf1;
+                border:3px solid #0c5460;
+                padding:30px;
+                border-radius:15px;
+                text-align:center;
+                margin-top:15px;">
+                <h1 style="color:#0c5460;font-size:42px;">
+                 Income Less than or Equal to 50K
+                </h1>
+            </div>
+            """, unsafe_allow_html=True)
 
-        fig, ax = plt.subplots(figsize=(4,4))
+    except Exception as e:
+        st.error(
+            f"Unable to generate the individual prediction: {e}"
+        )
 
-        ax.imshow(cm, cmap="Blues")
-
-        for i in range(cm.shape[0]):
-            for j in range(cm.shape[1]):
-                ax.text(
-                    j,
-                    i,
-                    cm[i, j],
-                    ha="center",
-                    va="center",
-                    fontsize=14
-                )
-
-        ax.set_xlabel("Predicted")
-        ax.set_ylabel("Actual")
-        ax.set_xticks([0, 1])
-        ax.set_yticks([0, 1])
-
-        st.pyplot(fig)
 # ==========================================
 # Footer
 # ==========================================
 
 st.markdown("---")
-st.caption("Developed by Sowmiya S - 2025AC05651 | BITS Pilani M.Tech AI & ML")
+st.caption(
+    "Developed by Sowmiya S - 2025AC05651 | BITS Pilani M.Tech AI & ML"
+)
