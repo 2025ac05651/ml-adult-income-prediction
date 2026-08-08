@@ -166,7 +166,7 @@ https://2025ac05651-ml-adult-income-prediction.streamlit.app/
 
 ---
 
-# Screenshots
+# 11. Screenshots
 
 ### Streamlit Home Page
 
