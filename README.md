@@ -90,7 +90,7 @@ The following supervised machine learning algorithms were implemented and compar
 | k-Nearest Neighbors (kNN) | Delivered balanced performance with better recall and F1-score than Logistic Regression, making it suitable for this dataset after feature scaling. |
 | Gaussian Naive Bayes | Recorded the lowest overall performance because of its low recall and F1-score. The feature independence assumption limited its effectiveness. |
 | Random Forest (Ensemble) | Achieved the highest Accuracy, AUC, F1-score and MCC, demonstrating strong generalization and robustness on the Adult Income dataset. |
-| **Overall Winner** | **Random Forest (Ensemble)** was the best-performing model and was selected for deployment in the Streamlit application. |
+| **Overall Winner** | **Random Forest (Ensemble)** was the best-performing model based on the evaluation results. It is highlighted as the overall winner, while the Streamlit application allows users to select and evaluate all five implemented models.. |
 
 ---
 
