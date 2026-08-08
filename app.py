@@ -1,6 +1,16 @@
 import streamlit as st
 import pandas as pd
 import joblib
+from sklearn.metrics import (
+    confusion_matrix,
+    classification_report,
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    matthews_corrcoef,
+    roc_auc_score
+)
 
 # ==========================================
 # Page Configuration
@@ -145,8 +155,41 @@ st.sidebar.write("• <=50K")
 st.sidebar.write("• >50K")
 
 # ==========================================
+# Upload Test Dataset
+# ==========================================
+
+
+st.markdown("---")
+st.header("📊 Model Evaluation on Uploaded Test Dataset")
+st.write(
+    "Upload a test dataset (CSV) containing the target column "
+    "**income** to evaluate the selected model. "
+    "The application will display evaluation metrics, a "
+    "classification report, and a confusion matrix."
+)
+
+uploaded_file = st.file_uploader(
+    "Upload Test Data (.csv)",
+    type=["csv"]
+)
+
+if uploaded_file is not None:
+    test_df = pd.read_csv(uploaded_file)
+
+    st.success("Test dataset uploaded successfully!")
+
+    st.dataframe(test_df.head())
+
+# ==========================================
 # Input Section
 # ==========================================
+
+st.markdown("---")
+st.header("🔍 Single Income Prediction")
+st.write(
+    "Enter the feature values below and click **Predict Income** "
+    "to predict whether the annual income is **>50K** or **<=50K**."
+)
 
 st.header("Enter Feature Values")
 
@@ -275,6 +318,29 @@ if predict:
 
     confidence = max(probs) * 100
 
+    st.subheader("Evaluation Metrics")
+
+    metric_df = pd.DataFrame({
+        "Metric": [
+            "Accuracy",
+            "AUC",
+            "Precision",
+            "Recall",
+            "F1 Score",
+            "MCC"
+        ],
+        "Value": [
+            m["Accuracy"],
+            m["AUC"],
+            m["Precision"],
+            m["Recall"],
+            m["F1"],
+            m["MCC"]
+        ]
+    })
+
+    st.table(metric_df)
+
     st.markdown("---")
     st.markdown("## Prediction Result")
 
@@ -316,6 +382,110 @@ if predict:
             </h1>
         </div>
         """, unsafe_allow_html=True)
+    if uploaded_file is not None and "income" in test_df.columns:
+
+        from sklearn.metrics import classification_report, confusion_matrix
+        import matplotlib.pyplot as plt
+
+        # Split features and target
+        X_test = test_df.drop("income", axis=1)
+        y_test = test_df["income"]
+
+        # Scale if needed
+        if model_name in ["Logistic Regression", "k-Nearest Neighbors"]:
+            X_model = scaler.transform(X_test)
+        else:
+            X_model = X_test
+
+        # Predict
+        if model_name == "Logistic Regression":
+            y_pred = log_model.predict(X_model)
+
+        elif model_name == "Decision Tree":
+            y_pred = dt_model.predict(X_model)
+
+        elif model_name == "k-Nearest Neighbors":
+            y_pred = knn_model.predict(X_model)
+
+        elif model_name == "Naive Bayes":
+            y_pred = nb_model.predict(X_model)
+
+        else:
+            y_pred = rf_model.predict(X_model)
+
+        # ==========================================
+        # Calculate Evaluation Metrics
+        # ==========================================
+
+        accuracy = accuracy_score(y_test, y_pred)
+        precision = precision_score(y_test, y_pred)
+        recall = recall_score(y_test, y_pred)
+        f1 = f1_score(y_test, y_pred)
+        mcc = matthews_corrcoef(y_test, y_pred)
+
+        st.subheader("Evaluation Metrics")
+
+        metrics_df = pd.DataFrame({
+            "Metric": [
+                "Accuracy",
+                "Precision",
+                "Recall",
+                "F1 Score",
+                "MCC"
+            ],
+            "Value": [
+                round(accuracy, 4),
+                round(precision, 4),
+                round(recall, 4),
+                round(f1, 4),
+                round(mcc, 4)
+            ]
+        })
+
+        st.table(metrics_df)
+
+        # =============================
+        # Classification Report
+        # =============================
+        st.subheader("Classification Report")
+
+        report = classification_report(
+            y_test,
+            y_pred,
+            output_dict=True
+        )
+
+        st.dataframe(pd.DataFrame(report).transpose())
+
+        # =============================
+        # Confusion Matrix
+        # =============================
+
+        st.subheader("Confusion Matrix")
+
+        cm = confusion_matrix(y_test, y_pred)
+
+        fig, ax = plt.subplots(figsize=(4,4))
+
+        ax.imshow(cm, cmap="Blues")
+
+        for i in range(cm.shape[0]):
+            for j in range(cm.shape[1]):
+                ax.text(
+                    j,
+                    i,
+                    cm[i, j],
+                    ha="center",
+                    va="center",
+                    fontsize=14
+                )
+
+        ax.set_xlabel("Predicted")
+        ax.set_ylabel("Actual")
+        ax.set_xticks([0, 1])
+        ax.set_yticks([0, 1])
+
+        st.pyplot(fig)
 # ==========================================
 # Footer
 # ==========================================
